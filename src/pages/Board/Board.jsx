@@ -1,4 +1,25 @@
+import Switch from '../../components/Switch'
+import TaskRow from '../../components/TaskRow'
+import Input from '../../components/Input'
+import Button from '../../components/Button'
+import {useState} from 'react'
+import { nanoid } from 'nanoid'
+
 const PageBoard = () => {
+    const [taskName, setTaskName] = useState('')
+    const [tasks, setTasks] = useState([])
+    const handleSubmit = (e) =>{
+        e.preventDefault()
+        
+        const newTask = {
+            name: taskName,
+            done: false,
+            counter: 0,
+            id: nanoid(),
+        }
+
+        setTasks(o=>[...o, newTask])
+    }
     return (
         <section className="page active" id="page-board">
             <div className="page-header">
@@ -31,12 +52,8 @@ const PageBoard = () => {
 
             <div className="board-toolbar">
                 <div className="mount-wrap" data-hook="1.2 useState (toggle)">
-                    <div
-                        className="mount-point switch-row"
-                        id="mount-show-completed">
-                        <span className="switch"></span>
-                        <span>Show completed tasks</span>
-                    </div>
+                 <Switch />   
+
                 </div>
             </div>
 
@@ -44,56 +61,16 @@ const PageBoard = () => {
                 className="mount-wrap"
                 data-hook="1.6 array · 1.1 counter · 1.5 functional update">
                 <div className="mount-point" id="mount-tasklist">
-                    <div className="add-task-row">
-                        <input
-                            className="input grow"
-                            placeholder="Add a task and press Enter..."
-                        />
-                        <button className="btn">Add</button>
+                    <form onSubmit={handleSubmit} className="add-task-row">
+                     <Input placeholder="Add a task and press Enter..." value={taskName} onChange={(e)=> setTaskName(e.target.value)} />   
+                     <Button>Add</Button>
+                    </form>
                     </div>
                     <div className="task-list">
-                        <div className="task-row">
-                            <button className="task-check"></button>
-                            <span className="task-title">
-                                Migrate onboarding flow to new design
-                            </span>
-                            <div className="estimate-stepper">
-                                <button className="stepper-btn">−</button>
-                                <span className="stepper-value">3</span>
-                                <button className="stepper-btn">+</button>
-                            </div>
-                            <button className="quick-bump">+2</button>
-                            <button className="icon-danger">✕</button>
-                        </div>
-                        <div className="task-row">
-                            <button className="task-check checked">✓</button>
-                            <span className="task-title done">
-                                Write API docs for /webhooks
-                            </span>
-                            <div className="estimate-stepper">
-                                <button className="stepper-btn">−</button>
-                                <span className="stepper-value">5</span>
-                                <button className="stepper-btn">+</button>
-                            </div>
-                            <button className="quick-bump">+2</button>
-                            <button className="icon-danger">✕</button>
-                        </div>
-                        <div className="task-row">
-                            <button className="task-check"></button>
-                            <span className="task-title">
-                                Fix flaky retry test in queue worker
-                            </span>
-                            <div className="estimate-stepper">
-                                <button className="stepper-btn">−</button>
-                                <span className="stepper-value">2</span>
-                                <button className="stepper-btn">+</button>
-                            </div>
-                            <button className="quick-bump">+2</button>
-                            <button className="icon-danger">✕</button>
-                        </div>
+                        {tasks.map((el)=> (<TaskRow key={el.id} {...el}/>))}
                     </div>
                 </div>
-            </div>
+            
         </section>
     )
 }

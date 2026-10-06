@@ -1,3 +1,4 @@
+import {useState} from 'react'
 import Header from './components/Header/Header'
 import Sidebar from './components/Sidebar/Sidebar'
 import PageActivity from './pages/Activity/Activity'
@@ -6,17 +7,19 @@ import PagePeople from './pages/People/People'
 import PageSettings from './pages/Settings/Settings'
 
 function App() {
+    const [collapsed, setCollapsed] = useState(false)
+    const [page, setPage] = useState('board')   
     return (
-        <div className="app-shell" id="appShell">
-            <Sidebar />
+        <div className={`app-shell${collapsed ? " sidebar-collapsed" : ""}`} id="appShell">
+            <Sidebar setPage={setPage} page ={page} />
             <div className="app-main">
-                <Header />
+                <Header setCollapsed={setCollapsed}/>
 
                 <main className="page-area">
-                    <PageBoard />
-                    <PagePeople />
-                    <PageActivity />
-                    <PageSettings />
+                    {page === 'board' && <PageBoard />}
+                    {page === 'people' && <PagePeople />}
+                    {page === 'activity' && <PageActivity />}
+                    {page === 'settings' && <PageSettings />}
                 </main>
             </div>
         </div>
