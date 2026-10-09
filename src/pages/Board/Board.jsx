@@ -8,17 +8,23 @@ import { nanoid } from 'nanoid'
 const PageBoard = () => {
     const [taskName, setTaskName] = useState('')
     const [tasks, setTasks] = useState([])
+    const [showDone, setShowDone] = useState(false)
+
     const handleSubmit = (e) =>{
         e.preventDefault()
         
+        if (taskName.trim() === "") return
+
         const newTask = {
-            name: taskName,
+            name: taskName.trim(),
             done: false,
             counter: 0,
             id: nanoid(),
         }
 
         setTasks(o=>[...o, newTask])
+
+        setTaskName("")
     }
     return (
         <section className="page active" id="page-board">
@@ -32,15 +38,15 @@ const PageBoard = () => {
                 data-hook="3.1 useState + useEffect (fetch on mount)">
                 <div className="mount-point stats-row" id="mount-stats">
                     <div className="stat-card">
-                        <div className="stat-value">24</div>
+                        <div className="stat-value">{tasks.length}</div>
                         <div className="stat-label">Open</div>
                     </div>
                     <div className="stat-card">
-                        <div className="stat-value">9</div>
+                        <div className="stat-value">{tasks.filter(el => el.done === false).length}</div>
                         <div className="stat-label">In progress</div>
                     </div>
                     <div className="stat-card">
-                        <div className="stat-value">61</div>
+                        <div className="stat-value">{tasks.filter(el => el.done).length}</div>
                         <div className="stat-label">Done this sprint</div>
                     </div>
                     <div className="stat-card">
@@ -52,7 +58,7 @@ const PageBoard = () => {
 
             <div className="board-toolbar">
                 <div className="mount-wrap" data-hook="1.2 useState (toggle)">
-                 <Switch />   
+                 <Switch showDone={showDone} setShowDone={setShowDone}/>   
 
                 </div>
             </div>
@@ -67,7 +73,8 @@ const PageBoard = () => {
                     </form>
                     </div>
                     <div className="task-list">
-                        {tasks.map((el)=> (<TaskRow key={el.id} {...el}/>))}
+                        {showDone? tasks.filter((el) => el.done).map((el)=> (<TaskRow setTasks={setTasks} key={el.id} {...el}/>))
+                         : tasks.map((el)=> (<TaskRow setTasks={setTasks} key={el.id} {...el}/>))}
                     </div>
                 </div>
             
